@@ -318,6 +318,9 @@ const MyPostWidget = ({ picturePath }) => {
             padding: "1rem 2rem",
           }}
         />
+        <IconButton>
+          <MoreHorizOutlined sx={{ color: mediumMain }} />
+        </IconButton>
       </FlexBetween>
 
       {isImage && renderDropzone(setImage, ["jpg", "jpeg", "png"], image, "Image")}
@@ -328,6 +331,12 @@ const MyPostWidget = ({ picturePath }) => {
       <Divider sx={{ margin: "1.25rem 0" }} />
 
       <FlexBetween>
+        {isNonMobileScreens && (
+          <Typography color={mediumMain}>
+            🖥️
+          </Typography>
+        )}
+
         <FlexBetween gap="0.25rem" onClick={() => setIsImage(!isImage)}>
           <ImageOutlined sx={{ color: mediumMain }} />
           <Typography
@@ -385,3 +394,5 @@ const MyPostWidget = ({ picturePath }) => {
 };
 
 export default MyPostWidget;
+
+

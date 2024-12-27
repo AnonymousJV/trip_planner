@@ -188,6 +188,20 @@ const PostWidget = ({
     setNewComment("");
   };
 
+  const sharePost = () => {
+    const shareData = {
+      title: "Post by " + name,
+      text: description,
+      url: window.location.href + `post/${postId}`,
+    };
+
+    if (navigator.share) {
+      navigator.share(shareData).catch((error) => console.error("Error sharing", error));
+    } else {
+      alert("Sharing is not supported in your browser.");
+    }
+  };
+
   return (
     <WidgetWrapper m="2rem 0">
       <Friend
@@ -229,7 +243,7 @@ const PostWidget = ({
           </FlexBetween>
         </FlexBetween>
 
-        <IconButton>
+        <IconButton onClick={sharePost}>
           <ShareOutlined />
         </IconButton>
       </FlexBetween>
@@ -274,3 +288,4 @@ const PostWidget = ({
 };
 
 export default PostWidget;
+
