@@ -5,6 +5,10 @@ const initialState = {
   user: null,
   token: null,
   posts: [],
+  notifications: [],
+  messages: [],
+  unreadNotifications: 0,
+  unreadMessages: 0,
 };
 
 export const authSlice = createSlice({
@@ -21,12 +25,17 @@ export const authSlice = createSlice({
     setLogout: (state) => {
       state.user = null;
       state.token = null;
+      state.posts = [];
+      state.notifications = [];
+      state.messages = [];
+      state.unreadNotifications = 0;
+      state.unreadMessages = 0;
     },
     setFriends: (state, action) => {
       if (state.user) {
         state.user.friends = action.payload.friends;
       } else {
-        console.error("user friends non-existent :(");
+        console.error("user friends non-existent");
       }
     },
     setPosts: (state, action) => {
@@ -39,9 +48,61 @@ export const authSlice = createSlice({
       });
       state.posts = updatedPosts;
     },
+    setNotifications: (state, action) => {
+      state.notifications = action.payload.notifications;
+      state.unreadNotifications = action.payload.notifications.filter(n => !n.read).length;
+    },
+    setMessages: (state, action) => {
+      state.messages = action.payload.messages;
+      state.unreadMessages = action.payload.messages.filter(m => !m.read).length;
+    },
+    markNotificationRead: (state, action) => {
+      const notificationId = action.payload.notificationId;
+      const notification = state.notifications.find(n => n._id === notificationId);
+      if (notification && !notification.read) {
+        notification.read = true;
+        state.unreadNotifications = Math.max(0, state.unreadNotifications - 1);
+      }
+    },
+    markMessageRead: (state, action) => {
+      const messageId = action.payload.messageId;
+      const message = state.messages.find(m => m._id === messageId);
+      if (message && !message.read) {
+        message.read = true;
+        state.unreadMessages = Math.max(0, state.unreadMessages - 1);
+      }
+    },
+    addNotification: (state, action) => {
+      state.notifications.unshift(action.payload.notification);
+      if (!action.payload.notification.read) {
+        state.unreadNotifications += 1;
+      }
+    },
+    addMessage: (state, action) => {
+      state.messages.unshift(action.payload.message);
+      if (!action.payload.message.read) {
+        state.unreadMessages += 1;
+      }
+    },
+    deletePost: (state, action) => {
+      state.posts = state.posts.filter(post => post._id !== action.payload.postId);
+    }
   },
 });
 
-export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost } =
-  authSlice.actions;
+export const {
+  setMode,
+  setLogin,
+  setLogout,
+  setFriends,
+  setPosts,
+  setPost,
+  setNotifications,
+  setMessages,
+  markNotificationRead,
+  markMessageRead,
+  addNotification,
+  addMessage,
+  deletePost
+} = authSlice.actions;
 export default authSlice.reducer;

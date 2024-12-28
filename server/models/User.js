@@ -30,16 +30,29 @@ const UserSchema = new mongoose.Schema(
       default: "",
     },
     friends: {
-      type: Array,
+      type: [mongoose.Schema.Types.ObjectId],
+      ref: "User",
       default: [],
     },
     location: String,
     occupation: String,
-    viewedProfile: Number,
-    impressions: Number,
+    viewedProfile: {
+      type: Number,
+      default: 0,
+    },
+    impressions: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }
 );
+
+// Add index for email
+UserSchema.index({ email: 1 });
+
+// Add index for friends array
+UserSchema.index({ friends: 1 });
 
 const User = mongoose.model("User", UserSchema);
 export default User;
